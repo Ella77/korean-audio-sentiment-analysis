@@ -26,7 +26,8 @@ Amazon echo, GiGA Genie와 같은 스마트 스피커에도 audio recognition이
 
 mp3 파일이었던 데이터를 파형 형태로 시간 도메인(time domain)으로 나타낸다면 아래 figure1과 같이 나옵니다.
 
-<center><img src="http://dl.dropbox.com/s/wo5e38f9d0mk8fp/time_domain.png?dl=0" width="400" height="200" alt="figure1 : 샤샤샤 time domain"></center>
+![figure1](http://dl.dropbox.com/s/wo5e38f9d0mk8fp/time_domain.png)
+*figure1 : 샤샤샤 time domain*
 
 </br>
 
@@ -39,14 +40,17 @@ mp3 파일이었던 데이터를 파형 형태로 시간 도메인(time domain)�
 
 아래의 figure3의 빨강색으로 나타낸 신호가 어떤 임의의 신호라고 할 때, 이 신호를 푸리에 변환해서 여러가지 파랑색 주기함수들로 나타낼 수 있습니다.
 
-<center><img src="http://dl.dropbox.com/s/2fakw82xv3jgnt6/fft.png?dl=0" width="400" height="200" alt="figure2 : 푸리에 변환, (출처: 위키피디아)"></center>
+![figure2](http://dl.dropbox.com/s/2fakw82xv3jgnt6/fft.png)
+*figure2 : 푸리에 변환, (출처: 위키피디아)*
 
 </br>
 
  푸리에 변환에는 **DFT** , **FFT** , **STFT** 가 있습니다.
 
 1. DFT(Discrete Fourier Transform)
-: 연속적인 신호(여기서는 오디오가 되겠죠?)를 시간에 따라서 정직하게 푸리에 변환을 시키는 방법.
+: **DFT** 는 유한한 신호 시퀀스의 이산(Discrete) 신호의 푸리에 변환을 구하기 위한 방법입니다.
+컴퓨터로 푸리에 변환을 할 때 생기는 문제점인 1) 신호의 길이가 유한하지 않다는 것 2) 컴퓨터는 Discrete 한 정보만을 계산할 수 있다는 문제점을 해결한 방법입니다.
+**DFT** 는 신호를 유한하게 만들기 위해 신호를 N개로 자르고, 주파수를 sampling해서 연속한 주파수를 discrete하게 바꿔줍니다.
 
 2. FFT(Fast Fourier Transform)
 : 연산 처리가 빠를 것 같다는 것은 이름에서부터 느낄 수 있습니다. DFT의 연산시간이 길어져 고안된 방법입니다. 입력된 신호 중 필요한 신호만을 골라내서 빠른 시간안에 변환을 하는 것입니다.
@@ -60,7 +64,8 @@ mp3 파일이었던 데이터를 파형 형태로 시간 도메인(time domain)�
 
 </br>
 
-<center><img src="http://dl.dropbox.com/s/ng0na2pl4wfzdfs/frequency_domain.png?dl=0" width="400" height="200" alt="figure3 : 샤샤샤 frequency domain"></center>
+![figure3](http://dl.dropbox.com/s/ng0na2pl4wfzdfs/frequency_domain.png?dl=0)
+*figure3 : 샤샤샤 frequency domain*
 
 </br>
 
@@ -71,7 +76,8 @@ mp3 파일이었던 데이터를 파형 형태로 시간 도메인(time domain)�
 
 </br>
 
-<center><img src="http://dl.dropbox.com/s/cqfzj077b6urh42/mel_filterbank.png?dl=0" width="400" height="200" alt="figure4 : 샤샤샤 Mel filterbank"></center>
+![figure4](http://dl.dropbox.com/s/cqfzj077b6urh42/mel_filterbank.png)
+*figure4 : 샤샤샤 Mel filterbank*
 
 </br>
 
@@ -79,7 +85,8 @@ figure4에서 보이는 화려한 삼각형들은 소리의 주파수 표현에 
 
 </br>
 
-<center><img src="http://dl.dropbox.com/s/y6lb1048ctyi2wo/mel_coeff.png?dl=0" width="400" height="200" alt="figure5 : 샤샤샤 Mel Coefficients"></center>
+![figure5](http://dl.dropbox.com/s/y6lb1048ctyi2wo/mel_coeff.png)
+*figure5 : 샤샤샤 Mel Coefficients*
 
 </br>
 
@@ -88,7 +95,8 @@ figure4에서 보이는 화려한 삼각형들은 소리의 주파수 표현에 
 
 </br>
 
-<center><img src="http://dl.dropbox.com/s/zc750q9dqtb0iev/mel_energy.png?dl=0" width="400" height="200" alt="figure6 : 샤샤샤 Mel energy spectrogram"></center>
+![figure6](http://dl.dropbox.com/s/zc750q9dqtb0iev/mel_energy.png)
+*figure6 : 샤샤샤 Mel energy spectrogram*
 
 </br>
 
@@ -102,7 +110,8 @@ figure4에서 보이는 화려한 삼각형들은 소리의 주파수 표현에 
 
 </br>
 
-<center><img src="./images/mfcc_spectrogram.png" width="400" height="200" alt="figure7 : 샤샤샤 MFCC spectrogram"></center>
+![figure7](http://dl.dropbox.com/s/ikbnvqn0r7j4ptf/mfcc_spectrogram.png)
+*figure7 : `샤샤샤` MFCC spectrogram*
 
 </br>
 
@@ -112,7 +121,6 @@ figure4에서 보이는 화려한 삼각형들은 소리의 주파수 표현에 
 
 </br>
 
----
 
 ## 참고자료
 > [Ok Google: How to do Speech Recognition?](https://towardsdatascience.com/ok-google-how-to-do-speech-recognition-f77b5d7cbe0b)

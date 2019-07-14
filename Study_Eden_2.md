@@ -43,7 +43,8 @@ MFCC는 6가지 단계로 나눌 수 있습니다.
 
 </br>
 
-<center><img src="http://dl.dropbox.com/s/sa7ys5pt4vv740d/mel_scale.png?dl=0" width="300" height="100" alt="figure1 : Mel Scale"></center>
+![figure1](http://dl.dropbox.com/s/sa7ys5pt4vv740d/mel_scale.png)
+*figure1 : Mel Scale*
 
 </br>
 
@@ -72,7 +73,8 @@ log를 취하는 것은 사람이 실제로 듣는 것과 비슷하게 만들어
 
 이걸 코드로 짜야한다니 거지같죠? 하지만 걱정마세요. 그럴 필요가 없습니다. 이미 유명한 audio data processing library가 존재하거든요.
 
----
+</br>
+
 * 참고자료
 
 > [Mel Frequency Cepstral Coefficient (MFCC) tutorial](http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/)
