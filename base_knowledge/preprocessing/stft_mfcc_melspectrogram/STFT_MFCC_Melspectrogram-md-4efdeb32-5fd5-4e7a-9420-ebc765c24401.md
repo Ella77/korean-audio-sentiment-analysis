@@ -172,46 +172,39 @@ $$𝑚=2595log_{10}(1+𝑓/{700})$$
 
 을 참고하세요.모 대학원의 모 분께서 음악 신호와 머신러닝에 대한 질문을 주셨는데 중요한 점을 콕콕콕콕콕콕 집어서 물어보셔서 블로그에 글을 쓰기로 했습니다.
 
- ####질문-답변 1
+ #### 질문-답변 1
 
 음악 인식쪽이 생소하다 보니 일단 먼저 music genre classificaiton(음악,음성신호 입력 --> [전처리] --> [특징값 추출] --> [분류기] --> 결과) 를 주제로 toy porject를 해보려고 합니다. 툴은 librosa를 쓸 예정입니다.궁금한 점이 몇가지 있는데1) 혹시 mp3파일이 주어졌을때 전처리를 하고 특징값 추출을 하는 하는 소스코드가 있으시면 공유 가능한가요?- 상황에 따라 다르지만 대체로 추출과정은 https://github.com/fchollet/keras/blob/master/keras/applications/audio_conv_utils.py#L27 을 참고하시면 됩니다.여기에서는 mel-spectrogram만 뽑는데, 여기에 다른 추출기를 추가하시면 되겠습니다.2) 제 계획은 librosa가 제공하는 여러개의 특징을 최대한 많이 사용하고 후에 PCA등으로 후처리를 하려고 하는데, librosa가 제공하는 특징 (http://librosa.github.io/librosa/feature.html)중에 음악 분류에 적합한 특징에는 어떤 것이 있을까요?
 
 - MFCC는 필수고, 그 외에 spectral-시리즈와 zero-crossing + tempo ([http://librosa.github.io/librosa/generated/librosa.beat.estimate_tempo.html](http://librosa.github.io/librosa/generated/librosa.beat.estimate_tempo.html)) 등을 쓰시면 됩니다.그리고 특징값 추출 전에 [http://librosa.github.io/librosa/generated/librosa.decompose.hpss.html](http://librosa.github.io/librosa/generated/librosa.decompose.hpss.html) 을 사용하셔서 두 채널을 따로 하시면 도움이 될겁니다.
 
- ####질문-답변 2
+ #### 질문-답변 2
 
 지난번에 말씀하신데로 간단한 특징 추출 과정을 수행해보고 있는데, 몇가지 궁금한점이 있습니다.
 
-1 [https://github.com/fchollet/keras/blob/master/keras/applications/audio_conv_utils.py#L27](https://github.com/fchollet/keras/blob/master/keras/applications/audio_conv_utils.py#L27) 을 참고하라고 하셔서 소스코드를 살펴봤습니다. 보통 음악 파일들은 3분이상이며, 제각기 길이가 다른데 소스코드에서 음악 파일의 가운데 DURA = 29.12 초 구간만을 프로세스 하더라고요. 이렇게 하는 이유는 각 음악 파일 별로 길이(재생 시간)가 다르지만 같은 크기(차원)의 특징 벡터를 얻기 위함인가요? 그리고 가운데 29초만으로도 충분한 정보가 있다고 가정하고 처리하는건가요? 끝으로 이렇게 가운데 구간을 trim 하는 기법이 일반적인 기법인가요?- 이유: 맞습니다. 시간에 따른 정보를 어떻게 합치느냐에 따라 다르겠지만 링크의 컨브넷은 입력 신호의 길이를 29.12초로 제한하고 있습니다. 이보다 짧은 경우에는 나머지를 0으로 채워서 입력으로 넣어도 무방하지만 긴 경우에는 적당한 구간을 잘라줘야합니다. 그리고 말씀하신대로 가운데 29초가 충분한 정보가 있다고 가정하는 것입니다. 물론 상황에따라 다를테고, 제가 논문에서 사용한 음원은 기본적으로 30-60초의 '미리듣기'용 음원입니다. 이런 경우엔 사실 어디를 사용하더라도 무방하겠죠.가운데를 사용하는건 아무래도 가장 단순하고 그러면서도 적당히 작동하는 방법입니다. 그 외에도 대중 가요의 경우 60-120초 사이에 하이라이트 (혹은 chorus, 혹은 싸비..)가 있다고 가정할수도 있구요. 이 외에도 가장 중요한 구간을 뽑아주는 방법를 여러가지로 생각해볼 수 있겠죠. 간단한 방법으로는 frame별로 energy를 계산해서 평균 에너지가 제일 높은 30초를 뽑을수 있겠죠. 보다 복잡한 방법으로는 [음악 내 다양한 구간을 잘라주는 알고리즘](https://github.com/urinieto/msaf)을 사용한 뒤에 어디가 하이라이트인지 뽑을수도 있구요. 이는 원하시는 성능과 연산량에 따라 결정하시면 됩니다.
+* 1 [https://github.com/fchollet/keras/blob/master/keras/applications/audio_conv_utils.py#L27](https://github.com/fchollet/keras/blob/master/keras/applications/audio_conv_utils.py#L27) 을 참고하라고 하셔서 소스코드를 살펴봤습니다. 보통 음악 파일들은 3분이상이며, 제각기 길이가 다른데 소스코드에서 음악 파일의 가운데 DURA = 29.12 초 구간만을 프로세스 하더라고요. 이렇게 하는 이유는 각 음악 파일 별로 길이(재생 시간)가 다르지만 같은 크기(차원)의 특징 벡터를 얻기 위함인가요? 그리고 가운데 29초만으로도 충분한 정보가 있다고 가정하고 처리하는건가요? 끝으로 이렇게 가운데 구간을 trim 하는 기법이 일반적인 기법인가요?- 이유: 맞습니다. 시간에 따른 정보를 어떻게 합치느냐에 따라 다르겠지만 링크의 컨브넷은 입력 신호의 길이를 29.12초로 제한하고 있습니다. 이보다 짧은 경우에는 나머지를 0으로 채워서 입력으로 넣어도 무방하지만 긴 경우에는 적당한 구간을 잘라줘야합니다. 그리고 말씀하신대로 가운데 29초가 충분한 정보가 있다고 가정하는 것입니다. 물론 상황에따라 다를테고, 제가 논문에서 사용한 음원은 기본적으로 30-60초의 '미리듣기'용 음원입니다. 이런 경우엔 사실 어디를 사용하더라도 무방하겠죠.가운데를 사용하는건 아무래도 가장 단순하고 그러면서도 적당히 작동하는 방법입니다. 그 외에도 대중 가요의 경우 60-120초 사이에 하이라이트 (혹은 chorus, 혹은 싸비..)가 있다고 가정할수도 있구요. 이 외에도 가장 중요한 구간을 뽑아주는 방법를 여러가지로 생각해볼 수 있겠죠. 간단한 방법으로는 frame별로 energy를 계산해서 평균 에너지가 제일 높은 30초를 뽑을수 있겠죠. 보다 복잡한 방법으로는 [음악 내 다양한 구간을 잘라주는 알고리즘](https://github.com/urinieto/msaf)을 사용한 뒤에 어디가 하이라이트인지 뽑을수도 있구요. 이는 원하시는 성능과 연산량에 따라 결정하시면 됩니다.
 
-2 음성/음악신호+머신러닝 초심자를 위한 가이드 [2편]을 보면, 프레임 마다 특징값을 뽑는 것이 아니라 오디오 신호 전체를 표현할 특징값을 찾기 위해 평균 및 분산 MAX를 뽑는다고 하는데 혹시 관련 논문 아시면 제목 알려주 실 수 있나요?
-
+* 2 음성/음악신호+머신러닝 초심자를 위한 가이드 [2편]을 보면, 프레임 마다 특징값을 뽑는 것이 아니라 오디오 신호 전체를 표현할 특징값을 찾기 위해 평균 및 분산 MAX를 뽑는다고 하는데 혹시 관련 논문 아시면 제목 알려주 실 수 있나요?
 그리고 1)질문과 연관지었을 때 제가 음악 처리를 할때, 음악 파일 1개의 전체 구간에 대해서 평균 분산을 구하게 되면 아무래도 정보가 많이 뭉개질것 같더라고요. 그래서 1)번의 코드처럼 아예 처음부터 가운데 구간이 충분히 의미 있다고 가정하고 29.12초의 짧은 구간만을 평균, 분산 등을 이용해서 오디오 레벨 특징을 뽑으려고 하는데 reasonable한 방법인가요?[http://dspace.library.uvic.ca:8080/bitstream/handle/1828/1344/tsap02gtzan.pdf?sequence=1](http://dspace.library.uvic.ca:8080/bitstream/handle/1828/1344/tsap02gtzan.pdf?sequence=1) 를 보시면 평균과 분산 등을 사용했습니다. 그 외에도 frame-based feature를 clustering하고 이를 기반으로 quantized count를 사용하는 방법([http://dawenl.github.io/publications/LiangZE15-ccm.pdf](http://dawenl.github.io/publications/LiangZE15-ccm.pdf))도 있습니다.그리고 가운데 구간만 사용하는것이 곡 전체를 사용하는 것보다 나을것이라는데 동의합니다.
 
-3 특징 추출 시 HPSS를 통해 2채널로 분리한 뒤 특징을 추출하라고 하던데, 예를들면 제가 LIBROSA에서 제공하는 특징들 중 A,B,C 를 추출하려고 한다면, 하나의 음원으로부터 각 채널별로 A,B,C를 추출해서 총 6개(3*2)의 특징을 구하라는 말씀이신가요? 예제들을 잘 보면 어떤 특징은 H채널에서 뽑고, 어떤 특징은 P채널에서 뽑더라고요. ([https://github.com/librosa/librosa/blob/master/examples/LibROSA%20demo.ipynb](https://github.com/librosa/librosa/blob/master/examples/LibROSA%20demo.ipynb))
+* 3 특징 추출 시 HPSS를 통해 2채널로 분리한 뒤 특징을 추출하라고 하던데, 예를들면 제가 LIBROSA에서 제공하는 특징들 중 A,B,C 를 추출하려고 한다면, 하나의 음원으로부터 각 채널별로 A,B,C를 추출해서 총 6개(3*2)의 특징을 구하라는 말씀이신가요? 예제들을 잘 보면 어떤 특징은 H채널에서 뽑고, 어떤 특징은 P채널에서 뽑더라고요. ([https://github.com/librosa/librosa/blob/master/examples/LibROSA%20demo.ipynb](https://github.com/librosa/librosa/blob/master/examples/LibROSA%20demo.ipynb))
 
 말씀하신대로 Harmonic + Percussive에서 모든 특징을 다 뽑아도 큰 문제는 없겠지만 가장 relevant한 정보만 뽑는다고 한다면, 각 트랙에 맞춰서 특징값을 골라주는게 좋겠네요. 하모니나 pitch에 관련된 특징값(chroma-어쩌구, ) 은 harmonic 트랙에서 뽑고, rhythm/onset/tempo 등은 percussive 트랙을 이용하시구요. spectral_어쩌구; (spectral centroid, ..)가 좀 애매한데, 얘네들은 분리하기 전 채널을 이용해 추출하는 것이 좋아보입니다.
 
-4 종종 특징들을 뽑고 아래와 같이 LOG화 시키던데 이렇게 하는것이 일반적인 방법이며, 인식 향상에 도움이 되나요?
-
- Convert to log scale (dB). We'll use the peak power as reference.
+* 4 종종 특징들을 뽑고 아래와 같이 LOG화 시키던데 이렇게 하는것이 일반적인 방법이며, 인식 향상에 도움이 되나요? Convert to log scale (dB). We'll use the peak power as reference.
 
 log_S = librosa.logamplitude(S, ref_power=np.max)네. 우선 STFT/CQT/Melgram등의 time-frequency representation은 log()를 씌워 데시벨 스케일로 바꿔주는것이 좋습니다. (그 외에도 일반적인 머신러닝에서 하듯 zero-mean unit-variance로 standardisation을 해주는것이 좋을테구요.) 이런 전처리는 인식 향상에 도움이 됩니다.
 
-5 음악 인식 분야에서도 CNN을 이용한 기법들이 도입되고 있다고 들었는데, 보통 CNN의 input 은 주로 어떻게 처리해서 주나요? 그리고 혹시 관련 논문을 알려주실 수 있나요?
+* 5 음악 인식 분야에서도 CNN을 이용한 기법들이 도입되고 있다고 들었는데, 보통 CNN의 input 은 주로 어떻게 처리해서 주나요? 그리고 혹시 관련 논문을 알려주실 수 있나요? 
 
-Pitch와 관련된 정보 추출:** CQT를 사용하고 대역폭을 음의 fundamental frequency가 분포할 수 있는 영역으로 제한한다. (대략 30Hz - 3kHz정도가 되겠죠)
+" Pitch와 관련된 정보 추출: CQT를 사용하고 대역폭을 음의 fundamental frequency가 분포할 수 있는 영역으로 제한한다. (대략 30Hz - 3kHz정도가 되겠죠)
 
-리듬관련: STFT나 Mel-spectrogram을 사용한다.  
+리듬관련: STFT나 Mel-spectrogram을 사용한다. 풀고자 하는 문제가 사람의 musical perception에 관련된 경우 (예: 감정 인식):** Mel-spectrogram을 우선적으로 고려하고 STFT도 가능하면 테스트해본다. 주파수 대역은 대략 4kHz - 11K를 고려한다. 잘 모름: 8kHz나 16kHz로 샘플링하고 STFT (n_fft=1024 또는 512)와 Mel-spectrogram (128 bins)를 써본다.
 
-풀고자 하는 문제가 사람의 musical perception에 관련된 경우 (예: 감정 인식):** Mel-spectrogram을 우선적으로 고려하고 STFT도 가능하면 테스트해본다. 주파수 대역은 대략 4kHz - 11K를 고려한다. 잘 모름: 8kHz나 16kHz로 샘플링하고 STFT (n_fft=1024 또는 512)와 Mel-spectrogram (128 bins)를 써본다.
+음악이 아니라 음성이 입력이다:** Mel-spectrogram을 최우선적으로 고려한다. 음악, 음성이 아니라 '소리'에 관련된 작업이다: STFT를 사용하고 Mel-spectrogram을 고려해본다. 
 
-음악이 아니라 음성이 입력이다:** Mel-spectrogram을 최우선적으로 고려한다.
+그리고 이와 관련된 논문은 아직 없습니다. 제가 대략 2-4개월내로 하나 작성하려고 계획중입다. "
 
-음악, 음성이 아니라 '소리'에 관련된 작업이다: STFT를 사용하고 Mel-spectrogram을 고려해본다. 
-
-그리고 이와 관련된 논문은 아직 없습니다. 제가 대략 2-4개월내로 하나 작성하려고 계획중입다. 
-
-6 제가 앞으로 해보려는 것은 일단 음원이 주어지면 고정 길이로 음원 구간을 trim 시키고, 이 구간에 대해 여러개의 특징벡터를 추출하려고 해요. 이렇게 하면, 음원에 대해서 (프레임 개수) X (프레임당 특징 벡터들의 차원의 합)의 행렬이 만들어 질텐데, 음악 장르를 구분하는 task라고 가정하고 CNN 의 input으로서 이 이차원 행렬 그대로 주는게 좋을까요 아니면 2)에서 언급한것처럼 이 2차원 행렬의 프레임별 평균, 분산등을 구해서 1차원 벡터로 차원을 축소 한 뒤 입력으로 주는 것이 좋을까요?
+* 6 제가 앞으로 해보려는 것은 일단 음원이 주어지면 고정 길이로 음원 구간을 trim 시키고, 이 구간에 대해 여러개의 특징벡터를 추출하려고 해요. 이렇게 하면, 음원에 대해서 (프레임 개수) X (프레임당 특징 벡터들의 차원의 합)의 행렬이 만들어 질텐데, 음악 장르를 구분하는 task라고 가정하고 CNN 의 input으로서 이 이차원 행렬 그대로 주는게 좋을까요 아니면 2)에서 언급한것처럼 이 2차원 행렬의 프레임별 평균, 분산등을 구해서 1차원 벡터로 차원을 축소 한 뒤 입력으로 주는 것이 좋을까요?
 
 -데이터 개수가 충분히 많다면 2차원 데이터를 쓰시고, 그렇지 않으면 1차원 벡터로 입력 데이터의 크기를 줄여야겠죠. 장단점이 있어서 해보기전엔 정하기 어려워보입니다.
