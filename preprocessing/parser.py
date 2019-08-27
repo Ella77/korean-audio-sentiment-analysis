@@ -1,5 +1,8 @@
 import json
 import pprint
+'''
+json파일에서 감정 관련 데이터 추출 -> path|label이 담긴 metadata.txt로 저장 
+'''
 
 def parser(file_path):
 	with open(file_path) as f:
