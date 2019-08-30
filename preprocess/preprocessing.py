@@ -20,6 +20,7 @@ import IPython.display
 import librosa
 # And the display module for visualization
 import librosa.display
+from pydub import AudioSegment
 
 class preprocessing :
 	def __init__(self):
@@ -34,4 +35,10 @@ class preprocessing :
 
         return y_save, sr_save
 
+   def audiocut(audio_path, start,end, output_path):  
+	newAudio = AudioSegment.from_wav(audio_path)
+    	newAudio = newAudio[start:end] #milisecond 단위
+    	newAudio.export(output_path, format="wav")
+	
+   	
 
