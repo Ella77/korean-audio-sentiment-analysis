@@ -14,8 +14,11 @@ import os
 import tensorflow as tf
 import numpy as np
 from preprocess.parsing import pars
+from preprocess.preprocessing import transforma
 import time
 from datetime import datetime
+import glob
+
 
 '''
     filename: main.py
@@ -47,10 +50,23 @@ def main():
         np.save(nowdir, check)
 
     if check == 0:
+        #json & mp4 list name is needed in here
+        '''for filename in glob.glob('data/clip_*'):
+                print(filename)
+            filelist = os.listdir('/Users/stella/dev/korean-audio-sentiment-analysis/model/data')
+        '''
+        
+        #json
         name = "\\data\\example_226.json"
-
         j_data = pars(os.path.join(nowdir, name))
         print(j_data)
+
+        #mp4
+        path_list = []
+        input = transforma(path_list)
+        print(input)
+
+
 
 if __name__ == "__main__":
      main()

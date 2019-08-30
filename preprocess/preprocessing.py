@@ -9,3 +9,29 @@
 2. bad data제거
 '''
 
+# matplotlib for displaying the output
+import matplotlib.pyplot as plt
+
+
+# and IPython.display for audio output
+import IPython.display
+
+# Librosa for audio
+import librosa
+# And the display module for visualization
+import librosa.display
+
+class preprocessing :
+	def __init__(self):
+
+    def transforma(audio_path):
+        #audio_path list 받아서 for 문으로 넣을 수 있게
+        audio_path = '/Users/stella/dev/korean-audio-sentiment-analysis/model/data/clip_13/clip_13.mp4' #자동화
+        y, sr = librosa.load(audio_path)
+        y_save.append(y)
+        sr_save.append(sr)
+
+
+        return y_save, sr_save
+
+
