@@ -1,5 +1,6 @@
 import librosa
 import os 
+import wave
 
 #utils for audio
 '''
@@ -92,3 +93,30 @@ def split_on_silence_with_librosa( #묵음을 기준으로 파일 분리
         audio_paths.append(output_path)
 
     return audio_paths
+   
+
+def metaread(filename, time):
+    read = wave.open(filename, 'r')
+
+    #get sample rate
+    frameRate = read.getframerate()
+
+    #get number of frames
+    numFrames = read.getnframes()
+
+   #get duration
+    duration = numFrames/frameRate
+
+    #get all frames as a string of bytes
+    frames = read.readframes(numFrames)
+
+   #get 1 frame as a string of bytes
+    oneFrame = read.readframes(1)
+
+    #framerate*time == numframesneeded
+    numFramesNeeded=frameRate*time
+
+    #numFramesNeeded*oneFrame=numBytes
+    numBytes = numFramesNeeded*oneFrame   
+ 
+    return frameRate,numFrames,duration,frames,oneFrame,numFramesNeeded,numBytes
