@@ -9,6 +9,10 @@
 2. bad data제거
 '''
 
+# y index 넣어서 start frame ~
+# scipy
+# meta data : wave path, emotion label 저장
+
 # matplotlib for displaying the output
 import matplotlib.pyplot as plt
 
