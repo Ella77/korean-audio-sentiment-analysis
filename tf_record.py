@@ -1,17 +1,14 @@
 import tensorflow as tf
 import numpy as np
 import glob
+import os
 
  # get item 가져올때마다, dataloader
  #
-def get_mfcc(filepath,feature_size): #TODO need to trim and split
-    import librosa
-    y, sr = librosa.load(filepath, sr=16000)
-    mfcc = librosa.feature.mfcc(y=y,sr=16000, hop_length=128,n_fft=512,n_mfcc=257) 
-
+def get_mfcc(filepath):
+   return np.load(filepath)
 def get_label(filepath):
- json_name = filapath+'.json'
- #TODO label = 
+ label = os.path.basename(filepath) #get file's directory named by its emotion
  return label
 
 

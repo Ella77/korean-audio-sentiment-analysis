@@ -13,6 +13,15 @@ import os
     https://github.com/carpedm20/multi-speaker-tacotron-tensorflow/blob/master/audio/get_duration.py
 
 '''
+sample_rate = 16000
+def get_duration(audio):
+    return librosa.core.get_duration(audio, sr=sample_rate)
+def save_audio(audio, path, sample_rate=None):
+    audio *= 32767 / max(0.01, np.max(np.abs(audio)))
+    librosa.output.write_wav(path, audio.astype(np.int16),
+                             sample_rate if sample_rate is None else sample_rate)
+
+    print(" [*] Audio saved: {}".format(path))
 
 def load_wav(wav_path):
  y, sr = librosa.load(wav_path)
@@ -25,7 +34,21 @@ def walk_dir(path):
  for root, dirs, files in os.walk(path):
   for file in files:
    list.append(os.path.join(root,dirs,file))
- return list  
+ return list
+
+
+def get_silence(sec):
+    return np.zeros(sample_rate * sec)
+
+def load_audio(path, pre_silence_length=0, post_silence_length=0):
+    audio = librosa.core.load(path, sr=sample_rate)[0]
+    if pre_silence_length > 0 or post_silence_length > 0:
+        audio = np.concatenate([
+            get_silence(pre_silence_length),
+            audio,
+            get_silence(post_silence_length),
+        ])
+    return audio
    
  
 def load_and_trim(wav_path, TOP_DB):
