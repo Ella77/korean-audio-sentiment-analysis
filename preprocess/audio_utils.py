@@ -1,6 +1,12 @@
 import librosa
 import os 
 import wave
+from scipy.io.wavfile import write
+import numpy as np
+import json
+import codecs
+from random import uniform
+
 
 #utils for audio
 '''
@@ -12,7 +18,7 @@ import wave
 -duration to frame
 -frame to duration
     https://github.com/carpedm20/multi-speaker-tacotron-tensorflow/blob/master/audio/get_duration.py
-
+-audio augmentation
 '''
 
 def load_wav(wav_path):
@@ -93,7 +99,6 @@ def split_on_silence_with_librosa( #묵음을 기준으로 파일 분리
         audio_paths.append(output_path)
 
     return audio_paths
-   
 
 def metaread(filename, time):
     read = wave.open(filename, 'r')
@@ -120,3 +125,20 @@ def metaread(filename, time):
     numBytes = numFramesNeeded*oneFrame   
  
     return frameRate,numFrames,duration,frames,oneFrame,numFramesNeeded,numBytes
+
+‘’’
+usage
+convert_pitch(‘past.wav’,’new.wav’,1)
+convert_pitch(‘past.wav’,’new.wav’,-1)
+‘’’
+def convert_pitch(wav_path, save_path, pitch_step):
+    pitch_factor = 2**(pitch_step/12) * 22050
+    speed_factor = 2**(-pitch_step/12)
+    os.system('ffmpeg -i {} -af "asetrate=r={}, atempo={}, aresample=24000" {}'.format(wav_path, pitch_factor, speed_factor, save_path))
+
+ def convert_audio_speed(wav_path, save_path, speed_factor):
+     '''
+     speed_factor = 0.8 면 0.8배 속도
+     '''
+     os.system('ffmpeg -i {} -af atempo={} {}'.format(wav_path, speed_factor, save_path))   
+

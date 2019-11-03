@@ -8,7 +8,7 @@ class parsing :
 	def __init__(self):
 		temp = set()
 
-	def pars(self, file_path):
+	def parsee(self, file_path):
 		with open(file_path) as f:
 			raw_data = json.load(f)
 

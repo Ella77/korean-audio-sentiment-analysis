@@ -13,8 +13,9 @@ from __future__ import print_function
 import os
 import tensorflow as tf
 import numpy as np
-from preprocess.parsing import pars
-from preprocess.preprocessing import transforma
+from preprocess.parsing import parsing
+from preprocess.preprocessing import preprocessing
+
 import time
 from datetime import datetime
 import glob
@@ -38,6 +39,7 @@ def main():
     ## Save dir
     now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
     nowdir = os.getcwd()
+    print(nowdir)
     board_logdir = "C:\\Users\\stella\\tensorboard\\"
     ckpt_logdir = "C:\\Users\\stella\\dev\\korean-audio-sentiment-analysis\\model\\check_point\\"
 
@@ -55,15 +57,18 @@ def main():
                 print(filename)
             filelist = os.listdir('/Users/stella/dev/korean-audio-sentiment-analysis/model/data')
         '''
-        
+
         #json
         name = "\\data\\example_226.json"
-        j_data = pars(os.path.join(nowdir, name))
+        a = parsing()
+
+        j_data = a.parsee(os.path.join(nowdir, name))
         print(j_data)
 
         #mp4
         path_list = []
-        input = transforma(path_list)
+        b = preprocessing()
+        input = b(path_list)
         print(input)
 
 
